@@ -1,0 +1,43 @@
+version: '3.5' 
+networks:
+  flask_app_network:
+    name: my-global-net
+
+volumes:
+  PGDATA:
+    external: true
+
+services:
+  flask:
+    hostname: flask
+    restart: always 
+    tty: true
+    privileged: true
+    container_name: flask_app
+    build: .
+    image: webapp:tag
+    depends_on:    
+      - postgres
+    ports:
+     - "5001:5000"
+    entrypoint: ["python", "/app/flask_app/app_html.py"]
+    volumes:      
+      - .:/app
+    networks: 
+      - flask_app_network
+
+  postgres:  
+    #restart: always  
+    image: postgres:9.6.2-alpine
+    container_name: postgres_db  
+    environment:    
+      - POSTGRES_USER=${USER}    
+      - POSTGRES_PASSWORD=${PASSWORD}    
+      - POSTGRES_DB=${DB}  
+    volumes:    
+      - PGDATA:/var/lib/postgresql/data  
+    ports:    
+      - "5432:5432"
+    networks: 
+      - flask_app_network
+      

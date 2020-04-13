@@ -1,0 +1,5 @@
+flask
+flask_restful
+Flask-Mail
+flask-WTF
+python-dotenv
